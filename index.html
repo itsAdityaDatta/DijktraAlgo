@@ -1,0 +1,76 @@
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/addons/p5.dom.js"></script>
+  <script>
+
+  var len=51;
+  var brt=20;
+  var box = 25;
+  var index;
+
+  var balls = new Array(len);
+  for(var i=0;i<len;i++){
+    balls[i] = new Array(brt);
+  }
+
+  function setup()
+  {
+    createCanvas(1340, 600);
+    for(var i=0;i<len;i++){
+      for(var j=0;j<brt;j++){
+        balls[i][j] = {
+          x : box*i+20,
+          y : box*j+87,
+          active : false,
+          display: function(){
+            if(this.active == false){
+              fill(255,255,255);
+            }
+            else{
+              fill(0,255,0);
+            }
+            strokeWeight(3);
+            rect(this.x,this.y,box,box);
+          }
+        }
+      }
+    }
+  }
+
+  function draw()
+  {
+    background(100,100,100);
+    for(var k=0;k<len;k++){
+      for(var l=0;l<brt;l++){
+        balls[k][l].display();
+      }
+    }
+    
+  }
+  function mouseClicked()
+  {
+    for(var i=0;i<len;i++){
+      for(var j=0;j<brt;j++){
+        if(balls[i][j].x < (mouseX) && balls[i][j].x > (mouseX-box) && balls[i][j].y < (mouseY) && balls[i][j].y > (mouseY-box)){
+          balls[i][j].active = true;
+        }
+      }
+    }
+  }
+
+  function mouseDragged()
+  {
+    for(var i=0;i<len;i++){
+      for(var j=0;j<brt;j++){
+        if(balls[i][j].x < (mouseX) && balls[i][j].x > (mouseX-box) && balls[i][j].y < (mouseY) && balls[i][j].y > (mouseY-box)){
+          balls[i][j].active = true;
+        }
+      }
+    }
+  }
+</script>
+</head>
+<body>
+</body>
+</html>
