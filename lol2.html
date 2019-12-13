@@ -1,0 +1,303 @@
+<html>
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Abel' rel='stylesheet'>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/addons/p5.dom.js"></script>
+
+  <style type="text/css">
+    .Heading{
+      text-shadow: 0 0 6px black;
+      position: fixed;
+      color: white;
+      height: 26px;
+      top:-2;
+      right: 0;
+      width: 100%;
+      font-size: 26px;
+      font-family: Impact;
+      text-align: left;
+      background-color: black;
+      z-index: 2;
+    }
+
+  .sortingalgo{
+    text-align: center;
+    font-family: 'Abel';
+    font-size: 56px;
+    color: black;
+    position: relative;
+  }
+
+  .button1{
+      color: white;
+      font-size: 18px;
+      font-family: 'Abel';
+      background-color:  #009900;
+      padding: 2px;
+      padding-right: 40px;
+      padding-left: 40px;
+      border: 2px solid white;
+      cursor: pointer;
+      transition-duration: 0.2s;
+    }
+
+  .button1:hover{
+      background-color:  #00cc00;
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.1), 0 6px 20px 0 rgba(0,0,0,0.19);
+
+      
+    }
+    #canvasDiv {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      cursor: pointer;
+    }
+
+  </style>
+
+
+  <script>
+
+  var len=66;
+  var brt=26;
+  var box = 20;
+  var index;
+  var count = 0;
+  var starti;
+  var startj;
+  var endi;
+  var endj;
+
+  var balls = new Array(len);
+  for(var i=0;i<len;i++){
+    balls[i] = new Array(brt);
+  }
+
+  function setup()
+  {
+    var canvas = createCanvas(1340, 534);
+    canvas.parent("canvasDiv");
+    for(var i=0;i<len;i++){
+      for(var j=0;j<brt;j++){
+        balls[i][j] = {
+          x : box*i+10,
+          y : box*j+6,
+          status : 0,
+          dist : 9999,
+          active : false,
+          display: function(){
+
+            if(this.active == false){
+              fill(245,245,245);
+              stroke(0,150,150);
+
+              if(this.status == 3){
+                fill(0,235,0);
+                stroke(0,150,0);
+              }
+
+            }
+            else{
+              if(this.status == 0){
+                fill(0,0,0);
+                stroke(0,0,0);
+
+              }
+              else if(this.status == 1){
+                fill(0,0,190);
+                stroke(0,0,80);
+              }
+              else if(this.status == 2){
+                fill(170,0,0);
+                stroke(120,0,0);
+              }
+
+            }
+            strokeWeight(1);
+            var aRect = rect(this.x,this.y,box,box);
+          }
+        }
+      }
+    }
+
+    for(var k=0;k<len;k++){
+      for(var l=0;l<brt;l++){
+        if(k == 0 || k==len-1 || l==0 || l== brt-1){
+          balls[k][l].active = true;
+        }
+
+      }
+    }
+
+  }
+
+  function draw()
+  {
+    clear();
+    for(var k=0;k<len;k++){
+      for(var l=0;l<brt;l++){
+        balls[k][l].display();
+      }
+    }
+
+    
+  }
+  function mouseClicked()
+  {
+
+    for(var i=0;i<len;i++){
+      for(var j=0;j<brt;j++){
+        if(balls[i][j].x < (mouseX) && balls[i][j].x > (mouseX-box) && balls[i][j].y < (mouseY) && balls[i][j].y > (mouseY-box) && balls[i][j].active == false){
+          console.log(balls[i][j].dist);
+          if(count == 0)
+          {
+            starti = i;
+            startj = j;
+            balls[i][j].status = 1;
+            balls[i][j].active = true;
+            count++;
+          }
+          else if(count == 1)
+          {
+            endi = i;
+            endj = j;
+            balls[i][j].status = 2;
+            balls[i][j].active = true;
+            count++;
+          }
+          else{
+            balls[i][j].active = true;
+          }
+        }
+      }
+    }
+  }
+
+  function mouseDragged()
+  {
+    for(var i=0;i<len;i++){
+      for(var j=0;j<brt;j++){
+        if(balls[i][j].x < (mouseX) && balls[i][j].x > (mouseX-box) && balls[i][j].y < (mouseY) && balls[i][j].y > (mouseY-box) && balls[i][j].active == false){
+         
+          if(count == 0)
+          {
+            starti = i;
+            startj = j;
+            balls[i][j].status = 1;
+            balls[i][j].active = true;
+            count++;
+          }
+          else if(count == 1)
+          {
+            endi = i;
+            endj = j;
+            balls[i][j].status = 2;
+            balls[i][j].active = true;
+            count++;
+          }
+          else{
+            balls[i][j].active = true;
+          }
+        }
+      }
+    }
+  }
+
+
+
+
+  function assign(i,j){
+    balls[starti][startj].dist = 0;
+    if(i<=0 || i>=len-1 || j<=0 || j>=brt-1){
+      return;
+    }
+    if(balls[i-1][j].active == false ){
+      if(balls[i-1][j].dist > (balls[i][j].dist + 1) ){
+         balls[i-1][j].dist = balls[i][j].dist + 1;
+         assign(i-1,j);
+      }
+    }
+
+    if(balls[i][j-1].active == false ){
+      if(balls[i][j-1].dist > (balls[i][j].dist + 1) ){
+         balls[i][j-1].dist = balls[i][j].dist + 1;
+         assign(i,j-1);
+      }
+    }
+
+
+    if(balls[i+1][j].active == false ){
+      if(balls[i+1][j].dist > (balls[i][j].dist + 1) ){
+         balls[i+1][j].dist = balls[i][j].dist + 1;
+         assign(i+1,j);
+      }
+    }
+
+    if(balls[i][j+1].active == false ){
+      if(balls[i][j+1].dist > (balls[i][j].dist + 1) ){
+         balls[i][j+1].dist = balls[i][j].dist + 1;
+         assign(i,j+1);
+      }
+    }
+  }
+  var pathD = 0;
+  function path(i,j){
+    console.log(i,j);
+    if(balls[i][j].dist == 0){
+      balls[i][j].status = 1;
+      var myVar = setTimeout(function(){alert('Distance : ' + pathD + ' Blocks');},300);
+      return;
+    }
+
+    var minD = Math.min(balls[i+1][j].dist,balls[i-1][j].dist,balls[i][j-1].dist,balls[i][j+1].dist);
+    if(minD !=9999){
+      if(balls[i-1][j].dist == minD){
+        balls[i-1][j].status = 3;
+        pathD++;
+        path(i-1,j);
+      }
+
+      else if(balls[i+1][j].dist == minD){
+        balls[i+1][j].status = 3;
+        pathD++;
+        path(i+1,j);
+      }
+      else if(balls[i][j-1].dist == minD){
+        balls[i][j-1].status = 3;
+        pathD++;
+        path(i,j-1);
+      }
+      else if(balls[i][j+1].dist == minD){
+        balls[i][j+1].status = 3;
+        pathD++;
+        path(i,j+1);
+      }
+    }
+
+    else if(minD == 9999){
+      alert('Unable to reach destination');
+    }
+
+
+  }
+
+  function lol(){
+    assign(starti,startj);
+    path(endi,endj);
+    clearTimeout(myVar);
+  }
+
+
+
+</script>
+</head>
+<body>
+
+  <div class="Heading"><span style="position: relative; top:8;">&nbsp Dijkstra's Path-Finding Algorithm</sup></span></div><br><br>
+  <div  style="text-align: center;margin-left: auto;margin-right: auto;"> <button onclick="lol()" class="button1">FindPath</button> </div>
+  <div id='canvasDiv' ></div>
+</body>
+</html>
