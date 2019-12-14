@@ -1,0 +1,530 @@
+<!-- TO DOS
+
+1. animate p5JS
+2. maze recursive division algo
+3. draggable markers
+4. dynamic calculation
+5. wall                       DONE
+6. eraseWall                  DONE
+
+count 0 start marker
+count 1 end marker
+count 2 walls
+count 3 walls can be placed
+count 4 none walls cant be placed
+count 5 erase wall
+count 6 pool
+
+
+
+active = false
+status 0 white
+status 1 green
+
+active = true
+status 0 wall black
+status 1 start red
+status 2 end blue
+status 3 pool
+
+
+wall ke baad uberpool kaam nhi kr rha                       SOLVED
+count 2 par uberpool dikkat hogi                            SOLVED
+clearAll ke baad uberpool mein dikkat                       SOLVED
+if uberpool paths are repeated distance doesnt add up       SOLVED
+when paths repeat, uberpool -> start -> end                 SOLVED
+        instead of start -> uberpool -> end
+
+      -->
+
+
+
+<html>
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Abel' rel='stylesheet'>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/addons/p5.dom.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style type="text/css">
+    .Heading{
+      text-shadow: 0 0 6px black;
+      position: fixed;
+      color: white;
+      height: 26px;
+      top:-8;
+      right: 0;
+      width: 100%;
+      font-size: 30px;
+      font-style: 'bold';
+      font-family: 'Impact';
+      text-align: center;
+      background-color: black;
+      z-index: 2;
+    }
+
+  .sortingalgo{
+    text-align: center;
+    font-family: 'Abel';
+    font-size: 56px;
+    color: black;
+    position: relative;
+  }
+
+  .button1{
+      color: white;
+      font-size: 16px;
+      font-family: 'Abel';
+      background-color:  #009900;
+      padding: 2px;
+      padding-right: 40px;
+      padding-left: 40px;
+      border: 2px solid white;
+      cursor: pointer;
+      position: relative;
+      top: 10;
+      transition-duration: 0.2s;
+    }
+
+  .button1:hover{
+      background-color:  #00cc00;
+      box-shadow: 0 8px 16px 0 rgba(0,0,0,0.1), 0 6px 20px 0 rgba(0,0,0,0.19);
+
+      
+    }
+    #canvasDiv {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+      cursor: pointer;
+      position: relative;
+      top: 10;
+    }
+
+  </style>
+
+
+  <script>
+
+  var len=66;
+  var brt=26;
+  var box = 20;
+  var count = 0;
+  var starti;
+  var startj;
+  var endi;
+  var endj;
+  var pooli;
+  var poolj;
+  var poolCount = 0;
+
+  var balls = new Array(len);
+  for(var i=0;i<len;i++){
+    balls[i] = new Array(brt);
+  }
+
+  function setup()
+  {
+    var canvas = createCanvas(1340, 534);
+    canvas.parent("canvasDiv");
+    for(var i=0;i<len;i++){
+      for(var j=0;j<brt;j++){
+        balls[i][j] = {
+          x : box*i+10,
+          y : box*j+6,
+          status : 0,
+          dist : 9999,
+          active : false,
+          display: function(){
+
+            if(this.active == false){
+              fill(255,255,255);
+              stroke(0,150,150);
+
+              if(this.status == 1){
+                fill(0,235,0,175);
+                stroke(0,150,0);
+              }
+
+              if(this.status == 2){
+                fill(0,150,150,155);
+                stroke(0,150,0);
+              }
+
+            }
+            else{
+              if(this.status == 0){
+                fill(0,0,0);
+                stroke(0,0,0);
+
+              }
+              else if(this.status == 1){
+                fill(0,0,190);
+                stroke(0,0,80);
+              }
+              else if(this.status == 2){
+                fill(170,0,0);
+                stroke(120,0,0);
+              }
+
+              else if(this.status == 3){
+                fill(0,170,0);
+                stroke(0,0,0);
+              }
+
+            }
+            strokeWeight(1);
+              var aRect = rect(this.x,this.y,box,box);
+              
+          }
+        }
+      }
+    }
+
+    for(var k=0;k<len;k++){
+      for(var l=0;l<brt;l++){
+        if(k == 0 || k==len-1 || l==0 || l== brt-1){
+          balls[k][l].active = true;
+        }
+
+      }
+    }
+
+  }
+
+  function draw()
+  {
+    clear();
+    for(var k=0;k<len;k++){
+      for(var l=0;l<brt;l++){
+        balls[k][l].display();
+      }
+    }
+
+  }
+  function mouseClicked()
+  {
+    mouseDragged()
+  }
+
+  function mouseDragged()
+  {
+    for(var i=0;i<len;i++){
+      for(var j=0;j<brt;j++){
+        if(balls[i][j].x < (mouseX) && balls[i][j].x > (mouseX-box) && balls[i][j].y < (mouseY) && balls[i][j].y > (mouseY-box)){
+         
+         if(balls[i][j].active == false){
+            if(count == 0)
+            {
+              starti = i;
+              startj = j;
+              balls[i][j].status = 2;
+              balls[i][j].active = true;
+              count++;
+            }
+            else if(count == 1)
+            {
+              endi = i;
+              endj = j;
+              balls[i][j].status = 1;
+              balls[i][j].active = true;
+              document.getElementById('canvasDiv').style.cursor = 'default';
+              count = 3;
+            }
+            else if(count==2){
+              balls[i][j].status = 0;
+              balls[i][j].active = true;
+            }
+
+            else if(count == 6){
+              pooli = i;
+              poolj = j;
+              balls[i][j].status = 3;
+              balls[i][j].active = true;
+              document.getElementById('canvasDiv').style.cursor = 'default';
+              count = 3;
+              poolCount = 1;
+            }
+
+         }
+
+         else if(balls[i][j].active == true && count == 5 && balls[i][j].status == 0 && i!= 0 && i!=len-1 && j != 0 && j!= brt-1){ // eraseWalls
+            balls[i][j].active = false;
+
+         }
+          
+        }
+      }
+    }
+  }
+
+
+
+
+  function assign(i,j){
+    
+    if(i<=0 || i>=len-1 || j<=0 || j>=brt-1){
+      return;
+    }
+    if(balls[i-1][j].active == false ){
+      if(balls[i-1][j].dist > (balls[i][j].dist + 1) ){
+         balls[i-1][j].dist = balls[i][j].dist + 1;
+         assign(i-1,j);
+      }
+    }
+
+    if(balls[i][j-1].active == false ){
+      if(balls[i][j-1].dist > (balls[i][j].dist + 1) ){
+         balls[i][j-1].dist = balls[i][j].dist + 1;
+         assign(i,j-1);
+      }
+    }
+
+
+    if(balls[i+1][j].active == false ){
+      if(balls[i+1][j].dist > (balls[i][j].dist + 1) ){
+         balls[i+1][j].dist = balls[i][j].dist + 1;
+         assign(i+1,j);
+      }
+    }
+
+    if(balls[i][j+1].active == false ){
+      if(balls[i][j+1].dist > (balls[i][j].dist + 1) ){
+         balls[i][j+1].dist = balls[i][j].dist + 1;
+         assign(i,j+1);
+      }
+    }
+  }
+  var pathD = 0;
+  function path(i,j){
+    console.log(i,j);
+    if(balls[i][j].dist == 0){
+      balls[i][j].status = 2;
+      setTimeout(function(){
+        if(pathD!=0){
+          $("#myModal").modal();
+          document.getElementById('modal-body').innerHTML= '<br>&nbsp&nbsp  ' + pathD + ' Blocks';
+        }
+        pathD = 0;
+      },300);
+
+      return;
+    }
+
+    var minD = Math.min(balls[i+1][j].dist,balls[i-1][j].dist,balls[i][j-1].dist,balls[i][j+1].dist);
+    if(minD !=9999){
+      if(balls[i-1][j].dist == minD){
+        balls[i-1][j].status = 1;
+        if(poolCount == 2){
+          balls[i-1][j].status = 2;
+        }
+        pathD++;
+        path(i-1,j);
+      }
+
+      else if(balls[i+1][j].dist == minD){
+        balls[i+1][j].status = 1 ;
+        if(poolCount == 2){
+          balls[i+1][j].status = 2;
+        }
+        pathD++;
+        path(i+1,j);
+      }
+      else if(balls[i][j-1].dist == minD){
+        balls[i][j-1].status = 1;
+        if(poolCount == 2){
+          balls[i][j-1].status = 2;
+        }
+        pathD++;
+        path(i,j-1);
+      }
+      else if(balls[i][j+1].dist == minD){
+        balls[i][j+1].status = 1;
+        if(poolCount == 2){
+          balls[i][j+1].status = 2;
+        }
+        pathD++;
+        path(i,j+1);
+      }
+    }
+
+    else if(minD == 9999){
+      alert('Unable to reach destination');
+    }
+
+
+  }
+
+  function Init(){
+
+
+    if(poolCount ==0){
+      balls[starti][startj].dist = 0;
+      assign(starti,startj);
+      path(endi,endj);
+      count = 4;
+      document.getElementById('canvasDiv').style.cursor = 'default';
+    }
+
+    else{
+      balls[starti][startj].dist = 0;
+      assign(starti,startj);
+      path(pooli,poolj);
+      for(var i=0;i<len;i++){
+        for(var j=0;j<brt;j++){
+            balls[i][j].dist = 9999;
+          }
+        }
+        balls[pooli][poolj].dist = 0;
+        assign(pooli,poolj);
+        poolCount = 2;
+        path(endi,endj);
+        count = 4;
+        document.getElementById('canvasDiv').style.cursor = 'default';
+     
+    }
+
+  document.getElementById('noise').play();
+
+  }
+
+  function clearAll(){
+    count = 0;
+    poolCount = 0;
+
+    starti = 9999;
+    endi = 9999;
+    startj = 9999;
+    endj = 9999;
+    pathD = 0;
+    document.getElementById('canvasDiv').style.cursor = 'pointer';
+    
+    for(var i=0;i<len;i++){
+      for(var j=0;j<brt;j++){
+        balls[i][j] = {
+          x : box*i+10,
+          y : box*j+6,
+          status : 0,
+          dist : 9999,
+          active : false,
+          display: function(){
+
+            if(this.active == false){
+              fill(255,255,255);
+              stroke(0,150,150);
+
+              if(this.status == 1){
+                fill(0,235,0,175);
+                stroke(0,100,0);
+              }
+
+              if(this.status == 2){
+                fill(0,150,150,155);
+                stroke(0,150,0);
+              }
+
+
+            }
+            else{
+              if(this.status == 0){
+                fill(0,0,0);
+                stroke(0,0,0);
+
+              }
+              else if(this.status == 1){
+                fill(0,0,190);
+                stroke(0,0,80);
+              }
+              else if(this.status == 2){
+                fill(170,0,0);
+                stroke(120,0,0);
+              }
+
+              else if(this.status == 3){
+                fill(0,170,0);
+                stroke(0,0,0);
+              }
+
+
+            }
+            strokeWeight(1);
+            var aRect = rect(this.x,this.y,box,box);
+          }
+        }
+      }
+    }
+
+    for(var k=0;k<len;k++){
+      for(var l=0;l<brt;l++){
+        if(k == 0 || k==len-1 || l==0 || l== brt-1){
+          balls[k][l].active = true;
+        }
+
+      }
+    }
+
+  }
+
+  function wall(){
+    if(count == 3 || count == 5){
+      document.getElementById('canvasDiv').style.cursor = 'pointer';
+      count = 2;
+    }
+
+  }
+
+  function erase(){
+    if(count == 2 || count == 3){
+      document.getElementById('canvasDiv').style.cursor = 'pointer';
+      count = 5;
+    }
+
+  }
+
+  function pool(){
+    if(poolCount == 0 && count >=2){
+      count = 6;
+      document.getElementById('canvasDiv').style.cursor = 'pointer';
+    }
+  }
+
+
+</script>
+
+
+</head>
+<body style="background-color: rgb(214, 245, 255);">
+
+  <div class="Heading"><span style="position: relative; top:8;">&nbsp Dijkstra's Path-Finding Algorithm</sup></span></div><br><br>
+  <div  style="text-align: center;margin-left: auto;margin-right: auto;"> 
+    <button onclick="Init()" class="button1">FindPath</button>&nbsp&nbsp
+   <button onclick="wall()" class="button1">Wall</button>&nbsp&nbsp
+  <button onclick="erase()" class="button1">EraseWall</button>&nbsp&nbsp
+  <button onclick="pool()" class="button1">UberPool</button>&nbsp&nbsp
+  <button onclick="clearAll()" class="button1">ClearAll</button></div>
+  <div id='canvasDiv' ></div>
+
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog" style="width: 300px;position: relative;top: 150">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="color: white;background-color: rgb(0,170,0)">
+          <button type="button" class="close" data-dismiss="modal" style="color: white;opacity: 0.7" onmouseover="this.style.opacity = 1" onmouseout="this.style.opacity = 0.7">&times;</button>
+          <h4 class="modal-title" style="font-family: Impact;font-size: 24px;border: black">DISTANCE</h4>
+        </div>
+        <div id="modal-body" style="height: 100px;font-size: 18px"><br>
+          <p></p>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <audio id="noise" src="noise.mp3" preload="auto"></audio>
+</body>
+</html>
