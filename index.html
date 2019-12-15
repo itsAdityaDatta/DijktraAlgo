@@ -430,9 +430,10 @@ status 3 pool
 
 
   }
+  var uberBug = 0;
   var boobCount = 0;
   function Init(){
-
+    uberBug = 1;
     document.getElementById('WB').style.border = 'none';
     document.getElementById('EW').style.border = 'none';
     document.getElementById('UP').style.border = 'none';
@@ -465,6 +466,7 @@ status 3 pool
     poolCount = 0;
     initCount = 0;
     unable =0;
+    uberBug=0;
 
     starti = 9999;
     endi = 9999;
@@ -575,7 +577,7 @@ status 3 pool
     document.getElementById('EW').style.border = 'none';
     document.getElementById('WB').style.border = 'none';
 
-    if(poolCount == 0 && count >=2){
+    if(poolCount == 0 && count >=2 && uberBug==0){
       count = 6;
       document.getElementById('canvasDiv').style.cursor = 'pointer';
     }
