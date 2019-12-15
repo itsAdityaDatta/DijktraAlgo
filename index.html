@@ -38,9 +38,10 @@ status 3 pool
 5. when paths repeat, uberpool -> start -> end                 SOLVED
         instead of start -> uberpool -> end
 6. pathD resets to 0 and uber to end ka answer is coming
-when FindPath is clicked multiple times in Uber Pool           SOLVED (using initCount and pathD2 variables)
+   when FindPath is clicked multiple times in Uber Pool        SOLVED (using initCount and pathD2 variables)
 7. unable to reach wala bug                                    SOLVED (using unable variable)
-
+8 uberPool click krne ke baad 
+  wall click krke dekh bina uberPool click krke                SOLVED
 
 
 -->
@@ -141,6 +142,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
   var poolCount = 0;
   var initCount = 0;
   var unable = 0;
+  var speed =25;
 
   var balls = new Array(len);
   for(var i=0;i<len;i++){
@@ -240,16 +242,16 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
          if(balls[i][j].active == false){
             if(count == 0)
             {
-              starti = i;
-              startj = j;
+              endi = i;
+              endj = j;
               balls[i][j].status = 2;
               balls[i][j].active = true;
               count++;
             }
             else if(count == 1)
             {
-              endi = i;
-              endj = j;
+              starti = i;
+              startj = j;
               balls[i][j].status = 1;
               balls[i][j].active = true;
               document.getElementById('canvasDiv').style.cursor = 'default';
@@ -387,7 +389,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
           balls[i-1][j].status = 2;
         }
         pathD++;
-        setTimeout(function(){path(i-1,j);},10);
+        setTimeout(function(){path(i-1,j);},speed);
       }
 
       else if(balls[i+1][j].dist == minD){
@@ -396,7 +398,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
           balls[i+1][j].status = 2;
         }
         pathD++;
-        setTimeout(function(){path(i+1,j);},10);
+        setTimeout(function(){path(i+1,j);},speed);
       }
       else if(balls[i][j-1].dist == minD){
         balls[i][j-1].status = 1;
@@ -404,7 +406,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
           balls[i][j-1].status = 2;
         }
         pathD++;
-        setTimeout(function(){path(i,j-1);},10);
+        setTimeout(function(){path(i,j-1);},speed);
       }
       else if(balls[i][j+1].dist == minD){
         balls[i][j+1].status = 1;
@@ -412,7 +414,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
           balls[i][j+1].status = 2;
         }
         pathD++;
-        setTimeout(function(){path(i,j+1);},10);
+        setTimeout(function(){path(i,j+1);},speed);
       }
     }
 
@@ -549,7 +551,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
     document.getElementById('EW').style.border = 'none';
     document.getElementById('UP').style.border = 'none';
 
-    if(count == 3 || count == 5 || count == 7){
+    if(count == 3 || count == 5 || count == 7 ||count ==6){
       document.getElementById('canvasDiv').style.cursor = 'pointer';
       count = 2;
     }
