@@ -3,7 +3,7 @@
 1. animate p5JS
 2. maze recursive division algo
 3. draggable markers
-4. dynamic calculation
+4. dynamic calculation/ realtime calculation onMouseDrag
 5. wall                       DONE
 6. eraseWall                  DONE
 
@@ -14,6 +14,7 @@ count 3 walls can be placed
 count 4 none walls cant be placed
 count 5 erase wall
 count 6 pool
+count 7 uberpool used 2 or more times -> transition to wall
 
 
 
@@ -59,18 +60,17 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <style type="text/css">
     .Heading{
-      text-shadow: 0 0 6px black;
       position: fixed;
-      color: white;
-      height: 29px;
-      top:-8;
+      color: rgb(0,0,0);
+      height: 42px;
+      top:-16;
       right: 0;
       width: 100%;
-      font-size: 38px;
-      font-style: 'bold';
+      font-size: 50px;
       font-family: 'Impact';
       text-align: center;
-      background-color: black;
+      border-bottom: : solid 2px black;
+      background-color: rgb(255, 255, 255);
       z-index: 2;
     }
 
@@ -90,7 +90,9 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
       padding: 2px;
       padding-right: 40px;
       padding-left: 40px;
-      border: 2px solid white;
+      border: 4px solid;
+      border-color: rgb(214, 245, 255);
+      border-radius: 4px;
       cursor: pointer;
       position: relative;
       top: 10;
@@ -110,6 +112,14 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
       cursor: pointer;
       position: relative;
       top: 10;
+    }
+
+    .modal-backdrop {
+       background-color: #000000;
+    }
+
+    .fade.in {
+       opacity: 0.93;
     }
 
   </style>
@@ -322,6 +332,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
             initCount ++;
           }
           if(unable == 0){
+          document.getElementById('modal-title').innerHTML= 'DISTANCE';
             document.getElementById('modal-body').innerHTML= '<br>&nbsp&nbsp  ' + pathD2 + ' Blocks';
             pathD = 0;
           }
@@ -502,11 +513,11 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
 
   function wall(){
 
-    document.getElementById('WB').style.border = 'solid 2px black';
+    document.getElementById('WB').style.border = 'solid 4px black';
     document.getElementById('EW').style.border = 'none';
     document.getElementById('UP').style.border = 'none';
 
-    if(count == 3 || count == 5){
+    if(count == 3 || count == 5 || count == 7){
       document.getElementById('canvasDiv').style.cursor = 'pointer';
       count = 2;
     }
@@ -515,10 +526,10 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
 
   function erase(){
     document.getElementById('WB').style.border = 'none';
-    document.getElementById('EW').style.border = 'solid 2px black';
+    document.getElementById('EW').style.border = 'solid 4px black';
     document.getElementById('UP').style.border = 'none';
 
-    if(count == 2 || count == 3){
+    if(count == 2 || count == 3 || count == 7){
       document.getElementById('canvasDiv').style.cursor = 'pointer';
       count = 5;
     }
@@ -526,7 +537,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
   }
 
   function pool(){
-   document.getElementById('UP').style.border = 'solid 2px black';
+   document.getElementById('UP').style.border = 'solid 4px black';
     document.getElementById('EW').style.border = 'none';
     document.getElementById('WB').style.border = 'none';
 
@@ -534,16 +545,23 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
       count = 6;
       document.getElementById('canvasDiv').style.cursor = 'pointer';
     }
+    else{ 
+      document.getElementById('canvasDiv').style.cursor = 'default';
+      count = 7;
+    }
   }
 
+  function instruc(){
+    $("#myModal2").modal();
+  }
 
 </script>
 
 
 </head>
-<body style="background-color: rgb(214, 245, 255);">
+<body style="background-color: rgb(214, 245, 255);" onload="instruc()">
 
-  <div class="Heading"><span style="position: relative; top:4;">&nbsp D<small>IJKSTRA'S</small> P<small>ATH</small>-F<small>INDING</small> A<small>LGORITHM</small></span></div><br><br>
+  <div class="Heading"><span style="position: relative; top:4;">&nbsp D<small>IJKSTRA'S</small> A<small>LGORITHM</small></span></div><br><br>
   <div  style="text-align: center;margin-left: auto;margin-right: auto;"> 
     <button onclick="Init()" class="button1" id='FP'>FindPath</button>&nbsp&nbsp
    <button onclick="wall()" class="button1" id='WB'>Wall</button>&nbsp&nbsp
@@ -563,6 +581,30 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
         </div>
         <div id="modal-body" style="height: 100px;font-size: 18px"><br>
           <p></p>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <div class="modal fade" id="myModal2" role="dialog">
+    <div class="modal-dialog" style="width: 600px; top: 40">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="color: white;background-color: rgb(110,0,0)">
+          <button type="button" class="close" data-dismiss="modal" style="color: white;opacity: 0.7" onmouseover="this.style.opacity = 1" onmouseout="this.style.opacity = 0.7">&times;</button>
+          <h4 id="modal-title2" style="font-family: Impact;font-size: 28px;border: black">GETTING STARTED</h4>
+        </div>
+        <div id="modal-body2" style="height: 400px;font-size: 18px"><br>
+          <p style="position: relative;left: 20;font-family: 'Abel'">1. Place the starting marker <span style="color: red">(RED)</span><br>
+             2. Place the ending marker <span style="color: blue"> (BLUE)</span><br>
+             3. Click on the wall button or the uberPool button as per your desire.<br>
+             4. When you're done, click on the FindPath button to find the <br>&nbsp&nbsp&nbsp&nbspshortest path (using Dijkstra's algorithm)<br>
+             5. Finally click on the clearAll button to start again.<br><br>
+             <div style="background-color: green;color: white;font-family: 'Abel';font-size: 24">&nbsp&nbspU<small>BER</small>P<small>OOL</small>: 
+             </div> </p>
+             <p style="position: relative;left: 20;font-family: 'Abel'">The program will find the shortest path between the starting and ending markers, which also passes through the uberPool marker, simulating an actual uberPool experience wherein you pick-up an intermediate passenger.</p>
         </div>
       </div>
       
