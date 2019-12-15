@@ -1,6 +1,6 @@
 <!-- 
 
-1. animate p5JS
+1. animate p5JS               DONE
 2. maze recursive division algo
 3. draggable markers
 4. dynamic calculation/ realtime calculation onMouseDrag
@@ -21,6 +21,7 @@ count 7 uberpool used 2 or more times -> transition to wall
 active = false
 status 0 white
 status 1 green
+status 2 blue
 
 active = true
 status 0 wall black
@@ -318,26 +319,62 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
       }
     }
   }
+
+
+
+
   var pathD = 0;
   var pathD2 = 0;
+  
+
+  var finalPathD = 0;
   function path(i,j){
     console.log(i,j);
     if(balls[i][j].dist == 0){
       balls[i][j].status = 2;
-      setTimeout(function(){
-        if(pathD!=0){
-          $("#myModal").modal();
+      if(pathD!=0){
+         
           if(initCount == 0){
             pathD2 = pathD;
             initCount ++;
           }
           if(unable == 0){
-          document.getElementById('modal-title').innerHTML= 'DISTANCE';
-            document.getElementById('modal-body').innerHTML= '<br>&nbsp&nbsp  ' + pathD2 + ' Blocks';
-            pathD = 0;
+
+            if(poolCount == 0){
+               $("#myModal").modal();
+              document.getElementById('modal-title').innerHTML= 'DISTANCE';
+              document.getElementById('modal-body').innerHTML= '<br>&nbsp&nbsp  ' + pathD2 + ' Blocks';
+              document.getElementById('noise').play();
+              pathD = 0; 
+            }
+             else if (poolCount != 0){
+
+                if(boobCount == 0){
+                  boobCount = 1;
+                  for(var i=0;i<len;i++){
+                    for(var j=0;j<brt;j++){
+                      balls[i][j].dist = 9999;
+                    }
+                  }
+                  poolCount = 2;
+                  balls[starti][startj].dist = 0;
+                  assign(starti,startj);
+                  path(pooli,poolj);
+                  pathD = 0; 
+                 
+                }
+                else if(boobCount == 1){
+                   $("#myModal").modal();
+                  var sum = pathD2 + pathD + 1;
+                  document.getElementById('modal-title').innerHTML= 'DISTANCE';
+                  document.getElementById('modal-body').innerHTML= '<br>&nbsp&nbsp  ' + sum + ' Blocks';
+                  document.getElementById('noise').play();
+                  count = 4;
+                  document.getElementById('canvasDiv').style.cursor = 'default';    
+                }
+            }
           }
         }
-      },300);
 
       return;
     }
@@ -350,7 +387,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
           balls[i-1][j].status = 2;
         }
         pathD++;
-        path(i-1,j);
+        setTimeout(function(){path(i-1,j);},10);
       }
 
       else if(balls[i+1][j].dist == minD){
@@ -359,7 +396,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
           balls[i+1][j].status = 2;
         }
         pathD++;
-        path(i+1,j);
+        setTimeout(function(){path(i+1,j);},10);
       }
       else if(balls[i][j-1].dist == minD){
         balls[i][j-1].status = 1;
@@ -367,7 +404,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
           balls[i][j-1].status = 2;
         }
         pathD++;
-        path(i,j-1);
+        setTimeout(function(){path(i,j-1);},10);
       }
       else if(balls[i][j+1].dist == minD){
         balls[i][j+1].status = 1;
@@ -375,7 +412,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
           balls[i][j+1].status = 2;
         }
         pathD++;
-        path(i,j+1);
+        setTimeout(function(){path(i,j+1);},10);
       }
     }
 
@@ -383,6 +420,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
      $("#myModal").modal();
           document.getElementById('modal-title').innerHTML= 'SORRY';
           document.getElementById('modal-body').innerHTML= '<br>&nbsp&nbsp  Unable to reach destination';
+          document.getElementById('noise').play();
           unable = 1;
           pathD = 0; 
       
@@ -390,7 +428,7 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
 
 
   }
-
+  var boobCount = 0;
   function Init(){
 
     document.getElementById('WB').style.border = 'none';
@@ -406,25 +444,17 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
     }
 
     else{
-      balls[starti][startj].dist = 0;
-      assign(starti,startj);
-      path(pooli,poolj);
-      for(var i=0;i<len;i++){
-        for(var j=0;j<brt;j++){
-            balls[i][j].dist = 9999;
-          }
-        }
+      
         balls[pooli][poolj].dist = 0;
         assign(pooli,poolj);
-        poolCount = 2;
         path(endi,endj);
         count = 4;
-        
         document.getElementById('canvasDiv').style.cursor = 'default';
-     
+        
     }
 
-  document.getElementById('noise').play();
+
+
 
   }
 
@@ -439,6 +469,8 @@ when FindPath is clicked multiple times in Uber Pool           SOLVED (using ini
     startj = 9999;
     endj = 9999;
     pathD = 0;
+    pathD2 = 0;
+    boobCount = 0;
     document.getElementById('canvasDiv').style.cursor = 'pointer';
 
     document.getElementById('WB').style.border = 'none';
