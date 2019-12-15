@@ -581,6 +581,9 @@ status 3 pool
       count = 6;
       document.getElementById('canvasDiv').style.cursor = 'pointer';
     }
+    else if(count <2){
+      return;
+    }
     else{ 
       document.getElementById('canvasDiv').style.cursor = 'default';
       count = 7;
