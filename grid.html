@@ -50,13 +50,7 @@
   }
   function mouseClicked()
   {
-    for(var i=0;i<len;i++){
-      for(var j=0;j<brt;j++){
-        if(balls[i][j].x < (mouseX) && balls[i][j].x > (mouseX-box) && balls[i][j].y < (mouseY) && balls[i][j].y > (mouseY-box)){
-          balls[i][j].active = true;
-        }
-      }
-    }
+    mouseDragged();
   }
 
   function mouseDragged()
