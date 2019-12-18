@@ -42,6 +42,7 @@ status 3 pool
 7. unable to reach wala bug                                    SOLVED (using unable variable)
 8 uberPool click krne ke baad 
   wall click krke dekh bina uberPool click krke                SOLVED
+9. uberpool ke baad erasewall not working                      SOLVED
 
 
 -->
@@ -565,7 +566,7 @@ status 3 pool
     document.getElementById('EW').style.border = 'solid 4px black';
     document.getElementById('UP').style.border = 'none';
 
-    if(count == 2 || count == 3 || count == 7){
+    if(count == 2 || count == 3 || count == 7 || count == 6){
       document.getElementById('canvasDiv').style.cursor = 'pointer';
       count = 5;
     }
@@ -581,7 +582,7 @@ status 3 pool
       count = 6;
       document.getElementById('canvasDiv').style.cursor = 'pointer';
     }
-    else if(count <2){
+    else if(poolCount == 0 && count <2 && uberBug==0){
       return;
     }
     else{ 
