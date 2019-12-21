@@ -1,0 +1,126 @@
+<!-- 
+
+1. animate p5JS               DONE
+2. maze recursive division algo
+3. draggable markers
+4. dynamic calculation/ realtime calculation onMouseDrag
+5. wall                       DONE
+6. eraseWall                  DONE
+
+count 0 start marker
+count 1 end marker
+count 2 walls
+count 3 walls can be placed
+count 4 none walls cant be placed
+count 5 erase wall
+count 6 pool
+count 7 uberpool used 2 or more times -> transition to wall
+
+
+
+active = false
+status 0 white
+status 1 green
+status 2 blue
+
+active = true
+status 0 wall black
+status 1 start red
+status 2 end blue
+status 3 pool
+
+------------------------------------------------------------  BUGS   ------------------------------------------------------------------
+
+1. wall ke baad uberpool kaam nhi kr rha                       SOLVED
+2. count 2 par uberpool dikkat hogi                            SOLVED
+3. clearAll ke baad uberpool mein dikkat                       SOLVED
+4. if uberpool paths are repeated distance doesnt add up       SOLVED
+5. when paths repeat, uberpool -> start -> end                 SOLVED
+        instead of start -> uberpool -> end
+6. pathD resets to 0 and uber to end ka answer is coming
+   when FindPath is clicked multiple times in Uber Pool        SOLVED (using initCount and pathD2 variables)
+7. unable to reach wala bug                                    SOLVED (using unable variable)
+8 uberPool click krne ke baad 
+  wall click krke dekh bina uberPool click krke                SOLVED
+9. uberpool ke baad erasewall not working                      SOLVED
+
+
+-->
+
+
+
+<html>
+<head>
+  <title>Dijkstra's Shortest Path Finding Algo</title>
+  <link href='https://fonts.googleapis.com/css?family=Abel' rel='stylesheet'>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/addons/p5.dom.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  
+
+
+  <link rel="stylesheet" type="text/css" href="djik.css">
+  <script src="djik.js"></script>
+
+
+</head>
+<body style="background-color: rgb(214, 245, 255);" onload="instruc()">
+
+  <div class="Heading"><span style="position: relative; top:4;">&nbsp D<small>IJKSTRA'S</small> A<small>LGORITHM</small></span></div><br><br>
+  <div  style="text-align: center;margin-left: auto;margin-right: auto;"> 
+    <button onclick="Init()" class="button1" id='FP'>FindPath</button>&nbsp&nbsp
+   <button onclick="wall()" class="button1" id='WB'>Wall</button>&nbsp&nbsp
+  <button onclick="erase()" class="button1" id='EW'>EraseWall</button>&nbsp&nbsp
+  <button onclick="pool()" class="button1" id='UP'>UberPool</button>&nbsp&nbsp
+  <button onclick="clearAll()" class="button1" >ClearAll</button></div>
+  <div id='canvasDiv' ></div>
+
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog" style="width: 300px;position: relative;top: 150">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="color: white;background-color: rgb(0,170,0)">
+          <button type="button" class="close" data-dismiss="modal" style="color: white;opacity: 0.7" onmouseover="this.style.opacity = 1" onmouseout="this.style.opacity = 0.7">&times;</button>
+          <h4 id="modal-title" style="font-family: Impact;font-size: 24px;border: black">DISTANCE</h4>
+        </div>
+        <div id="modal-body" style="height: 100px;font-size: 18px"><br>
+          <p></p>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <div class="modal fade" id="myModal2" role="dialog">
+    <div class="modal-dialog" style="width: 600px; top: 40">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header" style="color: white;background-color: rgb(110,0,0)">
+          <button type="button" class="close" data-dismiss="modal" style="color: white;opacity: 0.7" onmouseover="this.style.opacity = 1" onmouseout="this.style.opacity = 0.7">&times;</button>
+          <h4 id="modal-title2" style="font-family: Impact;font-size: 28px;border: black">GETTING STARTED</h4>
+        </div>
+        <div id="modal-body2" style="height: 400px;font-size: 18px"><br>
+          <p style="position: relative;left: 20;font-family: 'Abel'">1. Place the starting marker <span style="color: red">(RED)</span><br>
+             2. Place the ending marker <span style="color: blue"> (BLUE)</span><br>
+             3. Click on the wall button or the uberPool button as per your desire.<br>
+             4. When you're done, click on the FindPath button to find the <br>&nbsp&nbsp&nbsp&nbspshortest path (using Dijkstra's algorithm)<br>
+             5. Finally click on the clearAll button to start again.<br><br>
+             <div style="background-color: green;color: white;font-family: 'Abel';font-size: 24">&nbsp&nbspU<small>BER</small>P<small>OOL</small>: 
+             </div> </p>
+             <p style="position: relative;left: 20;font-family: 'Abel'">The program will find the shortest path between the starting and ending markers, which also passes through the uberPool marker, simulating an actual uberPool experience wherein you pick-up an intermediate passenger.</p>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <audio id="noise" src="noise.mp3" preload="auto"></audio>
+</body>
+</html>
