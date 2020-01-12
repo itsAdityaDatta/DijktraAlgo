@@ -1,12 +1,11 @@
-<!-- 
 
+<!-- 
 1. animate p5JS               DONE
 2. maze recursive division algo
 3. draggable markers
 4. dynamic calculation/ realtime calculation onMouseDrag
 5. wall                       DONE
 6. eraseWall                  DONE
-
 count 0 start marker
 count 1 end marker
 count 2 walls
@@ -15,22 +14,16 @@ count 4 none walls cant be placed
 count 5 erase wall
 count 6 pool
 count 7 uberpool used 2 or more times -> transition to wall
-
-
-
 active = false
 status 0 white
 status 1 green
 status 2 blue
-
 active = true
 status 0 wall black
 status 1 start red
 status 2 end blue
 status 3 pool
-
 ------------------------------------------------------------  BUGS   ------------------------------------------------------------------
-
 1. wall ke baad uberpool kaam nhi kr rha                       SOLVED
 2. count 2 par uberpool dikkat hogi                            SOLVED
 3. clearAll ke baad uberpool mein dikkat                       SOLVED
@@ -43,8 +36,6 @@ status 3 pool
 8 uberPool click krne ke baad 
   wall click krke dekh bina uberPool click krke                SOLVED
 9. uberpool ke baad erasewall not working                      SOLVED
-
-
 -->
 
 
@@ -74,7 +65,6 @@ status 3 pool
       font-size: 50px;
       font-family: 'Impact';
       text-align: center;
-      border-bottom: : solid 2px black;
       background-color: rgb(255, 255, 255);
       z-index: 2;
     }
@@ -126,6 +116,41 @@ status 3 pool
     .fade.in {
        opacity: 0.93;
     }
+
+    .slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #4CAF50;
+  cursor: pointer;
+}
    </style>
   <script >
         
@@ -142,7 +167,7 @@ status 3 pool
   var poolCount = 0;
   var initCount = 0;
   var unable = 0;
-  var speed =15;
+  var speed = 0;
 
   var balls = new Array(len);
   for(var i=0;i<len;i++){
@@ -389,7 +414,7 @@ status 3 pool
           balls[i-1][j].status = 2;
         }
         pathD++;
-        setTimeout(function(){path(i-1,j);},speed);
+        setTimeout(function(){path(i-1,j);},document.getElementById('inpSpeed').value);
       }
 
       else if(balls[i+1][j].dist == minD){
@@ -398,7 +423,7 @@ status 3 pool
           balls[i+1][j].status = 2;
         }
         pathD++;
-        setTimeout(function(){path(i+1,j);},speed);
+        setTimeout(function(){path(i+1,j);},document.getElementById('inpSpeed').value);
       }
       else if(balls[i][j-1].dist == minD){
         balls[i][j-1].status = 1;
@@ -406,7 +431,7 @@ status 3 pool
           balls[i][j-1].status = 2;
         }
         pathD++;
-        setTimeout(function(){path(i,j-1);},speed);
+        setTimeout(function(){path(i,j-1);},document.getElementById('inpSpeed').value);
       }
       else if(balls[i][j+1].dist == minD){
         balls[i][j+1].status = 1;
@@ -414,7 +439,7 @@ status 3 pool
           balls[i][j+1].status = 2;
         }
         pathD++;
-        setTimeout(function(){path(i,j+1);},speed);
+        setTimeout(function(){path(i,j+1);},document.getElementById('inpSpeed').value);
       }
     }
 
@@ -597,8 +622,7 @@ status 3 pool
 
 
 </head>
-<body style="background-color: rgb(214, 245, 255);" onload="instruc()">
-
+<body style="background-color: rgb(214, 245, 255);overflow: hidden;" onload="instruc()">
   <div class="Heading"><span style="position: relative; top:4;">&nbsp D<small>IJKSTRA'S</small> A<small>LGORITHM</small></span></div><br><br>
   <div  style="text-align: center;margin-left: auto;margin-right: auto;"> 
     <button onclick="Init()" class="button1" id='FP'>FindPath</button>&nbsp&nbsp
@@ -607,17 +631,20 @@ status 3 pool
   <button onclick="pool()" class="button1" id='UP'>UberPool</button>&nbsp&nbsp
   <button onclick="clearAll()" class="button1" >ClearAll</button></div>
   <div id='canvasDiv' ></div>
-
+    <br><br>
+    <div style="background-color: white;height: 100px;"><br>
+      <input type="range" min="0" max="150" value="50" class="slider" id='inpSpeed' style="width: 40%;margin: auto;">
+  </div>
   <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog" style="width: 300px;position: relative;top: 150">
+    <div class="modal-dialog" style="width: 290px;position: relative;top: 150">
     
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header" style="color: white;background-color: rgb(0,170,0)">
           <button type="button" class="close" data-dismiss="modal" style="color: white;opacity: 0.7" onmouseover="this.style.opacity = 1" onmouseout="this.style.opacity = 0.7">&times;</button>
-          <h4 id="modal-title" style="font-family: Impact;font-size: 24px;border: black">DISTANCE</h4>
+          <h4 id="modal-title" style="font-family: Impact;font-size: 24px;border: black;">DISTANCE</h4>
         </div>
-        <div id="modal-body" style="height: 100px;font-size: 18px"><br>
+        <div id="modal-body" style="height: 90px;font-size: 18px"><br>
           <p></p>
         </div>
       </div>
