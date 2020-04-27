@@ -49,24 +49,29 @@ status 3 pool
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/p5.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.5/addons/p5.dom.js"></script>
 
+  <link rel="icon" href="algorithm.png">
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   
 
 
-  <style type="text/css"> .Heading{
+  <style type="text/css">
+  
+  .Heading{
       position: fixed;
       color: rgb(0,0,0);
-      height: 42px;
-      top:-16;
+      height: 33px;
+      top:-10;
       right: 0;
       width: 100%;
       font-size: 50px;
       font-family: 'Impact';
       text-align: center;
-      background-color: rgb(255, 255, 255);
+      background-color: rgb(96, 166, 212);
       z-index: 2;
+      cursor: default;
     }
 
   .sortingalgo{
@@ -624,8 +629,8 @@ status 3 pool
 
 
 </head>
-<body style="background-color: rgb(214, 245, 255);overflow: hidden;" onload="instruc()">
-  <div class="Heading"><span style="position: relative; top:4;">&nbsp D<small>IJKSTRA'S</small> A<small>LGORITHM</small></span></div><br><br>
+<body onload="instruc()">
+  <div class="Heading"><span style="position: relative">&nbsp D<small>IJKSTRA'S</small> A<small>LGORITHM</small></span></div><br><br>
   <div  style="text-align: center;margin-left: auto;margin-right: auto;"> 
     <button onclick="Init()" class="button1" id='FP'>FindPath</button>&nbsp&nbsp
    <button onclick="wall()" class="button1" id='WB'>Wall</button>&nbsp&nbsp
